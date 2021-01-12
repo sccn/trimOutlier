@@ -1,0 +1,1 @@
+trimOutlier is a plugin for EEGLAB developed by Makoto Miyakoshi. It is a tool to perform simple data cleaning effectively without relying on semi-automated signal processing algorithm nor performs any data interpolation. The dedicated Wiki page is here https://sccn.ucsd.edu/wiki/TrimOutlier
