@@ -44,6 +44,18 @@ removing the channels with top 25% highest SD. By comparing these two
 scalp maps, you can see the scalp distribution of high amplitudes that
 is usually associated with artifacts.
 
+(05/14/2024 Updated)
+Since 2019, the SD bar graph shows error bars that indicates 1 SD.
+The SD of SD is calculated by dividing the data into 100 bins with
+equal length with trimming, then calculate SD for each bin. My calculating
+the mean and SD across the 100 SDs, you can get mean and SD of channel SD
+values. This approach helps distinguish the following two cases:
+(1) High-variance state is stationary (i.e. better to reject the channel;
+in this case, the error bar is short); (2) High-variance state is transiend
+(i.e. better to retain the channel; the error bar is long).
+![400px\|Figure S1. Updated display](images/additional.jpg)
+
+
 Before continuing by clicking “Yes,” be sure to study the graphs to
 estimate threshold values. There is no need to worry about finding the
 perfect threshold values on the first try however; again, an advantage
