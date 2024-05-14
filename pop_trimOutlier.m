@@ -13,7 +13,7 @@
 %                   blue, envelope across all the channels.
 
 % History:
-% 05/14/2024 Makoto. Mireia Torralba reported a bug about the definition of std between pop_trimOutlier() and trimOutlier(). Fixed.
+% 05/14/2024 Makoto. Mireia Torralba reported a bug about the definition of std between pop_trimOutlier() and trimOutlier(). Fixed. General maintenance for the details.
 % 05/15/2019 Makoto. Supported std of std across 100 bins.GUI details fixed.
 % 06/27/2014 ver 1.5 by Makoto and Clement. Drastic speed up by removing for loop (thanks Christian!)
 % 04/17/2014 ver 1.4 by Makoto. Channel rejection interactive part fixed. 
@@ -77,7 +77,7 @@ end
 %%% First, the topograph and bar graph for standard diviation %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Open the main figure.
-figureHandle1 = figure;
+figureHandle1 = figure('position', [800 300 800 700]);
 set(gcf, 'Name', 'Original Data; trimOutlier()', 'NumberTitle', 'off','Color', [0.93 0.96 1])
 
 % Compute standard deviation after dividing the data into 100 bins. 05/14/2019 Makoto.
@@ -93,9 +93,10 @@ if validChanFlag == 1
     % plot topograph - all channels
     subplot(3,2,1)
     topoplot(stdAllPnts, EEG.chanlocs, 'electrodes', 'on', 'emarker', {'.','k',14,1});
-    colorbar
+    cbarHandle = colorbar;
+    set(get(cbarHandle, 'title'), 'string', '(\muV)', 'FontSize', 11)
     caxis([min(stdAllPnts) max(stdAllPnts)]);
-    title('Channel SD topography','FontSize', 12)
+    title('Channel SD','FontSize', 11)
 
     % plot topograph - 90 percentile
     subplot(3,2,2)
@@ -106,9 +107,10 @@ if validChanFlag == 1
     std90percentPnts  = stdAllPnts(std90percentIdx);
     chanlocs90percent = EEG.chanlocs(std90percentIdx);
     topoplot(std90percentPnts, chanlocs90percent, 'electrodes', 'on', 'emarker', {'.','k',14,1});
-    colorbar
+    cbarHandle = colorbar;
+    set(get(cbarHandle, 'title'), 'string', '(\muV)', 'FontSize', 11)
     caxis([min(std90percentPnts) max(std90percentPnts)]);
-    title('90 percentile','FontSize', 12)
+    title('90-%tile trimmed','FontSize', 11)
 end
 
 % Plot bargraph with error bars. 05/14/2019 Makoto.
@@ -123,14 +125,13 @@ hold on
 errorbar(1:size(truncatedData,1), mean(std3D,2), zeros(1, size(truncatedData,1)), std(std3D,0,2), 'linestyle', 'none', 'color', [0 0 0])
 
 % Add annotations.
-title('Mean (SD) across piece-wise stds from 100 equally-divided data bins' ,'FontSize', 12)
-
+title('Channel SD with SD of SD across 100 equally-divided data bins' ,'FontSize', 11)
 
 xlim([0.5 size(EEG.data,1)+0.5]);
 barXLabel = get(gca,'XLabel');
 barYLabel = get(gca,'YLabel');
-set(barXLabel, 'String', 'Channels', 'FontSize', 12)
-set(barYLabel, 'String', 'Amplitudes (uV)', 'FontSize', 12)
+set(barXLabel, 'String', 'Channel Index', 'FontSize', 11)
+set(barYLabel, 'String', 'Amplitude (\muV)', 'FontSize', 11)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Second, time series of channels  %%%
@@ -166,11 +167,11 @@ end
 
 % annotations
 xlim(timeScaleEnds)
-title('Mean (Black), +/-2SD (Red), and envelope (Blue) across channels','FontSize', 12)
+title('Mean (Black), +/-2SD (Red), and envelope (Blue) across channels','FontSize', 11)
 lineXLabel = get(gca,'XLabel');
 lineYLabel = get(gca,'YLabel');
-set(lineXLabel, 'String', 'Latency (s)', 'FontSize', 12)
-set(lineYLabel, 'String', 'Amplitude (uV)', 'FontSize', 12)
+set(lineXLabel, 'String', 'Latency (s)', 'FontSize', 11)
+set(lineYLabel, 'String', 'Amplitude (\muV)', 'FontSize', 11)
 
 %%%%%%%%%%%%%%%%%%%%%%
 %%% cleaning data? %%%
@@ -186,14 +187,14 @@ end
 userInput = inputgui('title', 'trimOutlier()', 'geom', ...
    {{2 0 [0 0] [1 1]} {3 0 [2 0] [1 1]}}, ... 
 'uilist',...
-   {{'style' 'text' 'string' 'Chanel SD upper bound (uV)'} {'style' 'edit' 'string' ''}});
+   {{'style' 'text' 'string' sprintf('Chanel SD upper bound (microV)')} {'style' 'edit' 'string' ''}});
 
 if isempty(userInput{1,1})
     userInput{1,1} = Inf;
 end
 
 % open new fiugre and replicate bar graph
-figureHandle2 = figure;
+figureHandle2 = figure('position', [800 300 800 700]);
 set(gcf, 'Name', 'Channel rejection; trimOutlier()', 'NumberTitle', 'off', 'Color', [0.93 0.96 1])
 h6 = subplot(3,1,1);
 bar(stdAllPnts);
@@ -204,12 +205,12 @@ errorbar(1:size(truncatedData,1), mean(std3D,2), zeros(1, size(truncatedData,1))
 close(figureHandle1)
 
 % annotations
-title('Before channel rejection (Red, upper bound)','FontSize', 12)
+title('Before channel rejection (Red, upper bound)','FontSize', 11)
 xlim([0.5 size(EEG.data(:,:),1)+0.5]);
 barXLabel = get(gca,'XLabel');
 barYLabel = get(gca,'YLabel');
-set(barXLabel, 'String', 'Channels', 'FontSize', 12)
-set(barYLabel, 'String', 'Amplitudes (uV)', 'FontSize', 12)
+set(barXLabel, 'String', 'Channels', 'FontSize', 11)
+set(barYLabel, 'String', 'Amplitudes (uV)', 'FontSize', 11)
 
 
 while ~isempty(userInput{1,1})
@@ -221,7 +222,7 @@ while ~isempty(userInput{1,1})
     
     % draw a threshold line
     axes(h6) %#ok<*LAXES>
-    set(get(h6, 'title'), 'fontsize', 12)
+    set(get(h6, 'title'), 'FontSize', 11)
     hold on
     h7 = line([0 size(EEG.data,1)], [threshBar threshBar], 'color', [1 0 0]); % 05/14/2019 Makoto.
     %h7 = plot(0.5:0.1:size(EEG.data(:,:),1)+0.5, threshBar, 'r');
@@ -241,18 +242,18 @@ while ~isempty(userInput{1,1})
     ylim([0 plotYlim])
 
     % annotations
-    title('After channel rejection','FontSize', 12)
+    title('After channel rejection','FontSize', 11)
     xlim([0.5 length(stdAllPntsPost)+0.5]);
     barXLabel = get(gca,'XLabel');
     barYLabel = get(gca,'YLabel');
-    set(barXLabel, 'String', 'Channels', 'FontSize', 12)
-    set(barYLabel, 'String', 'Amplitudes (uV)', 'FontSize', 12)
+    set(barXLabel, 'String', 'Channel Index', 'FontSize', 11)
+    set(barYLabel, 'String', 'Amplitude (\muV)', 'FontSize', 11)
     
     userInput = inputgui('title', 'trimOutlier()', 'geom', ...
        {{1 1 [0 0] [1 1]}, ...
         {2 1 [0 1] [1 1]} {2 1 [1 1] [1 1]}}, ... 
     'uilist',...
-       {{'style' 'text' 'string' ['Upper bound at ' num2str(threshBar) 'uV rejects ' num2str(length(badChanIdx)) ' channels. Is it ok?']} ...
+       {{'style' 'text' 'string' ['Upper bound at ' num2str(threshBar) 'microV rejects ' num2str(length(badChanIdx)) ' channels. Is it ok?']} ...
         {'style' 'text' 'string' 'If not, enter other values'} {'style' 'edit' 'string' ''}});
     if ~isempty(userInput{1,1})
         delete(h7)
@@ -276,24 +277,24 @@ hold on
 errorbar(1:length(stdAllPntsPostSort), stdAllPntsPostSort, zeros(1, length(stdAllPntsPostSort)), stdAcross100binsSort, 'linestyle', 'none', 'color', [0 0 0]); % show 20 channels from the lowest
 
 % annotations
-title('Rejecting abnormally small channels (Red, lower bound)','FontSize', 12)
+title('Rejecting abnormally small channels (Red, lower bound)','FontSize', 11)
 xlim([0.5 20+0.5]);
 barXLabel = get(gca,'XLabel');
 barYLabel = get(gca,'YLabel');
-set(barXLabel, 'String', 'Sorted channels', 'FontSize', 12)
-set(barYLabel, 'String', 'Amplitudes (uV)', 'FontSize', 12)
+set(barXLabel, 'String', 'Sorted channel index', 'FontSize', 11)
+set(barYLabel, 'String', 'Amplitude (\muV)', 'FontSize', 11)
 
 userInput = inputgui('title', 'trimOutlier()', 'geom', ...
    {{2 0 [0 0] [1 1]} {3 0 [2 0] [1 1]}}, ... 
 'uilist',...
-   {{'style' 'text' 'string' 'Chanel SD lower bound (uV)'} {'style' 'edit' 'string' ''}});
+   {{'style' 'text' 'string' 'Chanel SD lower bound (microV)'} {'style' 'edit' 'string' ''}});
 
 if isempty(userInput{1,1})
     goodChansPost = goodChanIdx;
     threshBar = 0;
 else
     axes(h8)
-    set(get(h8, 'title'), 'fontsize', 12)
+    set(get(h8, 'title'), 'FontSize', 11)
     while ~isempty(userInput{1,1})
         threshBar = str2num(userInput{1,1});
         
@@ -311,7 +312,7 @@ else
             {{1 1 [0 0] [1 1]}, ...
             {2 1 [0 1] [1 1]} {2 1 [1 1] [1 1]}}, ...
             'uilist',...
-            {{'style' 'text' 'string' ['Lower bound at ' num2str(threshBar) 'uV rejects ' num2str(length(badChanIdx)) ' channels. Is it ok?']} ...
+            {{'style' 'text' 'string' ['Lower bound at ' num2str(threshBar) 'microV rejects ' num2str(length(badChanIdx)) ' channels. Is it ok?']} ...
             {'style' 'text' 'string' 'If not, enter other values'} {'style' 'edit' 'string' ''}});
         if ~isempty(userInput{1,1})
             delete(h9)
@@ -354,7 +355,7 @@ minAllChanPost  = min(postEEG.data,[],1);
 maxAllChanPost  = max(postEEG.data,[],1);
 
 % plot time-series data
-handle3 = figure;
+figureHandle3 = figure('position', [800 300 800 700]);
 set(gcf, 'Name', 'Datapoint Rejection; trimOutlier()', 'NumberTitle', 'off', 'Color', [0.93 0.96 1])
 subplot(2,1,1)
 plot(EEG.times/1000, meanAllChanPost, 'k'); hold on;
@@ -364,17 +365,17 @@ gca;
 
 % annotations
 xlim([EEG.xmin EEG.xmax])
-title('Before datapoint rejection','FontSize', 12)
+title('Before datapoint rejection','FontSize', 11)
 lineXLabel = get(gca,'XLabel');
 lineYLabel = get(gca,'YLabel');
-set(lineXLabel, 'String', 'Latency (s)', 'FontSize', 12)
-set(lineYLabel, 'String', 'Amplitude (uV)', 'FontSize', 12)
+set(lineXLabel, 'String', 'Latency (s)', 'FontSize', 11)
+set(lineYLabel, 'String', 'Amplitude (\muV)', 'FontSize', 11)
 
 userInput = inputgui('title', 'trimOutlier()', 'geom', ...
    {{2 1 [0 0] [1 1]} {3 1 [2 0] [1 1]}...
     {2 1 [0 1] [1 1]} {3 1 [2 1] [1 1]}}, ... 
 'uilist',...
-   {{'style' 'text' 'string' 'Enter absolute threshold [uV] (if no need, press ok)'} {'style' 'edit' 'string' ''}...
+   {{'style' 'text' 'string' 'Enter absolute threshold [microV] (if no need, press ok)'} {'style' 'edit' 'string' ''}...
     {'style' 'text' 'string' 'Point spread width for rejection [ms]'}           {'style' 'edit' 'string' ''}});
 
 if isempty(userInput{1,1})
@@ -428,27 +429,27 @@ else
         h13 = gca;
         
         % annotations
-        title('After datapoint rejection','FontSize', 12)
+        title('After datapoint rejection','FontSize', 11)
         xlim([0 length(timesPost)*1000/EEG.srate/1000]);
         barXLabel = get(gca,'XLabel');
         barYLabel = get(gca,'YLabel');
-        set(barXLabel, 'String', 'Latency (s)', 'FontSize', 12)
-        set(barYLabel, 'String', 'Amplitude (uV)', 'FontSize', 12)
+        set(barXLabel, 'String', 'Latency (s)', 'FontSize', 11)
+        set(barYLabel, 'String', 'Amplitude (\muV)', 'FontSize', 11)
         
         userInput = inputgui('title', 'trimOutlier()', 'geom', ...
             {{1 1 [0 0] [1 1]}, ...
              {3 1 [0 1] [1 1]} {3 1 [1 1] [1 1]},...
              {3 1 [0 2] [1 1]} {3 1 [1 2] [1 1]}},...
             'uilist',...
-            {{'style' 'text' 'string' sprintf('Threshold %2.0fuV point spread %2.0fms rejects %2.1fsec, creates %1.0f boundaries. Is it ok?',threshPnts,windowSize,badPointsInSec,size(rejectDataIntervals,1))} ...
-             {'style' 'text' 'string' 'If not, enter threshold [uV]'} {'style' 'edit' 'string' ''}...
+            {{'style' 'text' 'string' sprintf('Threshold %2.0fmicroV point spread %2.0fms rejects %2.1fsec, creates %1.0f boundaries. Is it ok?',threshPnts,windowSize,badPointsInSec,size(rejectDataIntervals,1))} ...
+             {'style' 'text' 'string' 'If not, enter threshold [microV]'} {'style' 'edit' 'string' ''}...
              {'style' 'text' 'string' 'Point spread width [ms]'} {'style' 'edit' 'string' ''}});
         if ~isempty(userInput{1,1})
             cla(h13)
         end
     end
 end
-close(handle3)
+close(figureHandle3)
 
 % reject data using user-defined thresholds
 EEG = trimOutlier(EEG, channelSdLowerBound, channelSdUpperBound, threshPnts, windowSize);
