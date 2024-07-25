@@ -18,7 +18,7 @@ What is *trimOutlier*?
     intuitive user environment with which one can determine rejection
     criteria based on feedback from cut-and-try processes.
 
-Where is the rejection log stored? (05/15/2019 updated)
+Where is the rejection log stored?
 -------------------------------------------------------
 
 It keeps a log in EEG.etc.trimOutlier.cleanChannelMask \[nbchan x 1
