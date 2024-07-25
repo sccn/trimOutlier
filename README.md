@@ -53,8 +53,8 @@ values. This approach helps distinguish the following two cases:
 (1) High-variance state is stationary (i.e. better to reject the channel;
 in this case, the error bar is short); (2) High-variance state is transiend
 (i.e. better to retain the channel; the error bar is long).
-![400px\|Figure S1. Updated display](images/additional.jpg)
 
+![400px\|Figure S1. Updated display](images/additional.jpg)
 
 Before continuing by clicking “Yes,” be sure to study the graphs to
 estimate threshold values. There is no need to worry about finding the
