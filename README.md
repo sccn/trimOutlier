@@ -1,4 +1,4 @@
-What is *trimOutlier*() for? (05/15/2019 updated)
+What is *trimOutlier*?
 -------------------------------------------------
 
 -   **Powerful data surveyability**: It is probably the only tool, as
